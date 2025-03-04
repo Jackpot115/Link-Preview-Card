@@ -66,8 +66,8 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
         border: 16px solid #f3f3f3; /* Light grey */
         border-top: 16px solid #FF0000; /* Blue */
         border-radius: 50%;
-        width: 500px;
-        height: 500px;
+        width: 100px;
+        height: 100px;
         animation: spin 2s linear infinite;
         }
 
