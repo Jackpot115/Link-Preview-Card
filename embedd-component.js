@@ -24,7 +24,7 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     this.t = this.t || {};
     this.t = {
       ...this.t,
-      title: "Title",
+      title: "Enter Link Here",
     };
     this.registerLocalization({
       context: this,
@@ -40,6 +40,7 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     return {
       ...super.properties,
       title: { type: String },
+      
     };
   }
 
@@ -60,6 +61,20 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
       h3 span {
         font-size: var(--embedd-component-label-font-size, var(--ddd-font-size-s));
       }
+
+      .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #FF0000; /* Blue */
+        border-radius: 50%;
+        width: 500px;
+        height: 500px;
+        animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+        }
     `];
   }
 
@@ -68,6 +83,7 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     return html`
 <div class="wrapper">
   <h3><span>${this.t.title}:</span> ${this.title}</h3>
+  <div class="loader"></div>
   <slot></slot>
 </div>`;
   }
