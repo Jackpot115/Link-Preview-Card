@@ -24,7 +24,9 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     this.t = this.t || {};
     this.t = {
       ...this.t,
-      title: "Enter Link Here",
+      title: "Link",
+      url: "URL",
+
     };
     this.registerLocalization({
       context: this,
@@ -40,6 +42,8 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     return {
       ...super.properties,
       title: { type: String },
+      image: { type: String },
+      url: { type: String },
       
     };
   }
@@ -62,6 +66,12 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
         font-size: var(--embedd-component-label-font-size, var(--ddd-font-size-s));
       }
 
+      //To toggle the loader spinner 
+
+      :host([fancy]) .loader {
+        display: none;
+      }
+      
       .loader {
         border: 16px solid #f3f3f3; /* Light grey */
         border-top: 16px solid #FF0000; /* Blue */
@@ -75,6 +85,12 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
         }
+
+      .emb-img {
+        width: 200px;
+        height: 200px;
+      }
+
     `];
   }
 
@@ -82,9 +98,10 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
   render() {
     return html`
 <div class="wrapper">
-  <h3><span>${this.t.title}:</span> ${this.title}</h3>
+<slot></slot>
+  <h3><span>${this.t.title}:</span> <a href="${this.url}">${this.url}</a>
   <div class="loader"></div>
-  <slot></slot>
+  <div><img class="emb-img" src="https://t4.ftcdn.net/jpg/01/43/42/83/240_F_143428338_gcxw3Jcd0tJpkvvb53pfEztwtU9sxsgT.jpg" /></div>
 </div>`;
   }
 
