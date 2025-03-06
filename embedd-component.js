@@ -64,7 +64,7 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
       border-radius: 8px;
       padding: 16px;
       max-width: 400px;
-      background: brown;
+      background: black;
     }
       .wrapper {
         margin: var(--ddd-spacing-2);
@@ -104,7 +104,7 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
       font-size: 12px;
       color: #555;
       background: #f9f9f9;
-      padding: 10px;
+      padding: 4px;
       border-radius: 5px;
       white-space: pre-wrap;
       word-wrap: break-word;
