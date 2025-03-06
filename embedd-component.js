@@ -25,9 +25,12 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     this.t = {
       ...this.t,
       title: "Link",
-      url: "URL",
-
+      url: "",
+      data: null,
+      loading: false,
+      error: false,
     };
+
     this.registerLocalization({
       context: this,
       localesPath:
@@ -44,7 +47,9 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
       title: { type: String },
       image: { type: String },
       url: { type: String },
-      
+      data: { type: Object },
+      loading: { type: Boolean },
+      error: { type: Boolean },
     };
   }
 
@@ -52,12 +57,15 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
   static get styles() {
     return [super.styles,
     css`
-      :host {
-        display: block;
-        color: var(--ddd-theme-primary);
-        background-color: var(--ddd-theme-accent);
-        font-family: var(--ddd-font-navigation);
-      }
+     :host {
+      display: block;
+      font-family: Arial, sans-serif;
+      border: 1px solid var(--ddd-primary, #ccc);
+      border-radius: 8px;
+      padding: 16px;
+      max-width: 400px;
+      background: brown;
+    }
       .wrapper {
         margin: var(--ddd-spacing-2);
         padding: var(--ddd-spacing-4);
@@ -66,9 +74,52 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
         font-size: var(--embedd-component-label-font-size, var(--ddd-font-size-s));
       }
 
-      //To toggle the loader spinner 
+      .loading {
+      text-align: center;
+    }
 
-      :host([fancy]) .loader {
+    .error {
+      color: red;
+      text-align: center;
+    }
+
+    .preview {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .preview img {
+      width: 100%;
+      border-radius: 5px;
+    }
+
+    .preview a {
+      font-weight: bold;
+      color: var(--ddd-primary, #005bbb);
+      text-decoration: none;
+    }
+
+    .metadata {
+      font-size: 12px;
+      color: #555;
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 600px) {
+      :host {
+        max-width: 300px;
+        padding: 10px;
+      }
+    }
+
+    //To toggle the loader spinner 
+
+    :host([fancy]) .loader {
         display: none;
       }
       
@@ -86,23 +137,69 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
         100% { transform: rotate(360deg); }
         }
 
+/**
+
+
       .emb-img {
         width: 200px;
         height: 200px;
       }
+ */
 
     `];
   }
 
+  firstUpdated() {
+    this.fetchPreview();
+  }
+
+  async fetchPreview() {
+    if (!this.url) return;
+    this.loading = true;
+    this.error = false;
+
+    try {
+      const response = await fetch(`https://open-apis.hax.cloud/api/services/website/metadata?q=${this.url}`);
+      if (!response.ok) throw new Error("Failed to fetch");
+      const json = await response.json();
+      this.data = json.data;
+    } catch (e) {
+      this.error = true;
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  updated(changedProperties) {
+    if (changedProperties.has("url")) {
+      this.fetchPreview();
+    }
+  }
+
+
+
   // Lit render the HTML
   render() {
+    if (this.loading) {
+      return html`<div class="loading">Loading...</div>`;
+    }
+
+    if (this.error || !this.data) {
+      return html`<div class="error">No preview available</div>`;
+    }
+    
     return html`
-<div class="wrapper">
-<slot></slot>
-  <h3><span>${this.t.title}:</span> <a href="${this.url}">${this.url}</a>
-  <div class="loader"></div>
-  <div><img class="emb-img" src="https://t4.ftcdn.net/jpg/01/43/42/83/240_F_143428338_gcxw3Jcd0tJpkvvb53pfEztwtU9sxsgT.jpg" /></div>
-</div>`;
+<div class="preview">
+        <a href="${this.url}" target="_blank">${this.data["og:title"] || this.url}</a>
+        <p>${this.data["og:description"] || "No description available"}</p>
+        ${this.data["og:image"]
+          ? html`<img src="${this.data["og:image"]}" alt="Preview Image">`
+          : ""}
+      </div>
+      <div class="metadata">
+        ${JSON.stringify(this.data, null, 2)}
+      </div>
+    `;
   }
 
   /**
