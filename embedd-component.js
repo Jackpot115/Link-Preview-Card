@@ -24,11 +24,11 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     this.t = this.t || {};
     this.t = {
       ...this.t,
-      title: "Link",
+      title: "",
       url: "",
       data: null,
-      loading: false,
       error: false,
+      loading: false
     };
 
     this.registerLocalization({
@@ -48,7 +48,7 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
       image: { type: String },
       url: { type: String },
       data: { type: Object },
-      loading: { type: Boolean },
+      loading: { type: Boolean, reflect: true, attribute: "loading" },
       error: { type: Boolean },
     };
   }
@@ -59,12 +59,12 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     css`
      :host {
       display: block;
+      color: var(--ddd-theme-primary-2);
       font-family: Arial, sans-serif;
-      border: 1px solid var(--ddd-primary, #ccc);
-      border-radius: 8px;
-      padding: 16px;
+      border: var(--ddd-primary, #ccc);
+      border-radius: var(--ddd-border-radius, 5px);
+      padding: var(--ddd-spacing-4);
       max-width: 400px;
-      background: black;
     }
       .wrapper {
         margin: var(--ddd-spacing-2);
@@ -117,13 +117,8 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
       }
     }
 
-    //To toggle the loader spinner 
-
-    :host([fancy]) .loader {
-        display: none;
-      }
       
-      .loader {
+      .loader-spinner {
         border: 16px solid #f3f3f3; /* Light grey */
         border-top: 16px solid #FF0000; /* Blue */
         border-radius: 50%;
@@ -136,15 +131,6 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
         }
-
-/**
-
-
-      .emb-img {
-        width: 200px;
-        height: 200px;
-      }
- */
 
     `];
   }
@@ -163,6 +149,8 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
       if (!response.ok) throw new Error("Failed to fetch");
       const json = await response.json();
       this.data = json.data;
+
+      this.title = this.data["og:title"] || "No Title Available";
     } catch (e) {
       this.error = true;
     } finally {
@@ -176,12 +164,25 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     }
   }
 
+  DefaultTheme() {
+    if (this.herf.includes("psu.edu")) {
+      return "--ddd-primary-2"
+    }
+    else {
+      return "--ddd-primary-20";
+    }
+  }
+
 
 
   // Lit render the HTML
   render() {
     if (this.loading) {
-      return html`<div class="loading">Loading...</div>`;
+      return html`
+        <div class="loading">
+          <div class="loader-spinner"></div>
+        </div>
+      `;
     }
 
     if (this.error || !this.data) {
@@ -189,18 +190,17 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     }
     
     return html`
-<div class="preview">
+      <div class="preview">
+        <h2>${this.title}</h2>
         <a href="${this.url}" target="_blank">${this.data["og:title"] || this.url}</a>
         <p>${this.data["og:description"] || "No description available"}</p>
         ${this.data["og:image"]
           ? html`<img src="${this.data["og:image"]}" alt="Preview Image">`
           : ""}
       </div>
-      <div class="metadata">
-        ${JSON.stringify(this.data, null, 2)}
-      </div>
     `;
   }
+
 
   /**
    * haxProperties integration via file reference
