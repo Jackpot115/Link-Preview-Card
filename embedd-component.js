@@ -100,16 +100,6 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
       text-decoration: none;
     }
 
-    .metadata {
-      font-size: 12px;
-      color: #555;
-      background: #f9f9f9;
-      padding: 4px;
-      border-radius: 5px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
     @media (max-width: 600px) {
       :host {
         max-width: 300px;
@@ -119,8 +109,8 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
 
       
       .loader-spinner {
-        border: 16px solid #f3f3f3; /* Light grey */
-        border-top: 16px solid #FF0000; /* Blue */
+        border: 16px solid #f3f3f3;
+        border-top: 16px solid #FF0000; 
         border-radius: 50%;
         width: 100px;
         height: 100px;
@@ -165,7 +155,7 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
   }
 
   DefaultTheme() {
-    if (this.herf.includes("psu.edu")) {
+    if (this.url.includes("psu.edu")) {
       return "--ddd-primary-2"
     }
     else {
@@ -177,6 +167,8 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
 
   // Lit render the HTML
   render() {
+
+
     if (this.loading) {
       return html`
         <div class="loading">
