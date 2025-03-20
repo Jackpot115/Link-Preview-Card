@@ -1,5 +1,5 @@
 {
-    "name": "@yourOrganization/embedd-component",
+    "name": "@yourOrganization/link-preview-card",
     "version": "0.0.0",
     "description": "Webcomponent embedd-component following hax / open-wc recommendations",
     "license": "Apache-2.0",
@@ -13,11 +13,11 @@
     ],
     "repository": {
       "type": "git",
-      "url": "https://github.com/Jackpot115/embedd-component"
+      "url": "https://github.com/Jackpot115/Link-Preview-Card"
     },
     "type": "module",
-    "main": "embedd-component.js",
-    "module": "embedd-component.js",
+    "main": "link-preview-card.js",
+    "module": "link-preview-card.js",
     "scripts": {
       "start": "web-dev-server",
       "build": "rimraf public && rollup -c rollup.config.js && npm run analyze",

@@ -12,10 +12,10 @@ import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
  * @demo index.html
  * @element embedd-component
  */
-export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
+export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
 
   static get tag() {
-    return "embedd-component";
+    return "link-preview-card";
   }
 
   constructor() {
@@ -31,13 +31,6 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
       loading: false
     };
 
-    this.registerLocalization({
-      context: this,
-      localesPath:
-        new URL("./locales/embedd-component.ar.json", import.meta.url).href +
-        "/../",
-      locales: ["ar", "es", "hi", "zh"],
-    });
   }
 
   // Lit reactive properties
@@ -60,7 +53,7 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
      :host {
       display: block;
       color: var(--ddd-theme-primary-2);
-      font-family: Arial, sans-serif;
+      font-family: var('--ddd-font-primary', sans-serif);
       border: var(--ddd-primary, #ccc);
       border-radius: var(--ddd-border-radius, 5px);
       padding: var(--ddd-spacing-4);
@@ -74,28 +67,25 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
         font-size: var(--embedd-component-label-font-size, var(--ddd-font-size-s));
       }
 
-      .loading {
-      text-align: center;
-    }
 
     .error {
-      color: red;
+      color: var(--simple-colors-default-theme-red-6);
       text-align: center;
     }
 
     .preview {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: var(--ddd-spacing-2);
     }
 
     .preview img {
       width: 100%;
-      border-radius: 5px;
+      border-radius: var(--ddd-border-radius-2);
     }
 
     .preview a {
-      font-weight: bold;
+      font-weight: var(--ddd-font-weight-bold, bold);
       color: var(--ddd-primary, #005bbb);
       text-decoration: none;
     }
@@ -103,11 +93,16 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     @media (max-width: 600px) {
       :host {
         max-width: 300px;
-        padding: 10px;
+        padding: var(--ddd-spacing-3);
       }
     }
 
-      
+    // The Spinner  
+
+    .loading {
+      text-align: center;
+    }
+
       .loader-spinner {
         border: 16px solid #f3f3f3;
         border-top: 16px solid #FF0000; 
@@ -122,8 +117,28 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
         100% { transform: rotate(360deg); }
         }
 
+        // The parts
+
+        ::part(header) {
+        font-size: var(--embedd-component-header-font-size, 1.5rem);
+        font-weight: var(--embedd-component-header-font-weight, bold);
+        color: var(--embedd-component-header-color, black);
+      }
+
+      ::part(link) {
+        color: var(--embedd-component-link-color, blue);
+        text-decoration: var(--embedd-component-link-decoration, none);
+      }
+
+      ::part(description) {
+        font-size: var(--embedd-component-description-font-size, 1rem);
+        color: var(--embedd-component-description-color, #333);
+      }
+
     `];
   }
+
+  // JSON grabbing the data
 
   firstUpdated() {
     this.fetchPreview();
@@ -148,11 +163,14 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
     }
   }
 
+
   updated(changedProperties) {
-    if (changedProperties.has("url")) {
-      this.fetchPreview();
+    if (changedProperties.has("url") && this.url) {
+      this.fetchPreview(this.url);
     }
   }
+
+  // Updating the title to change colors based on the URL
 
   DefaultTheme() {
     if (this.url.includes("psu.edu")) {
@@ -167,7 +185,6 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
 
   // Lit render the HTML
   render() {
-
 
     if (this.loading) {
       return html`
@@ -203,4 +220,4 @@ export class EmbeddComponent extends DDDSuper(I18NMixin(LitElement)) {
   }
 }
 
-globalThis.customElements.define(EmbeddComponent.tag, EmbeddComponent);
+globalThis.customElements.define(LinkPreviewCard.tag, LinkPreviewCard);
