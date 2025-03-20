@@ -57,27 +57,25 @@ export class LinkPreviewCard extends DDDSuper(I18NMixin(LitElement)) {
       border: var(--ddd-primary, #ccc);
       border-radius: var(--ddd-border-radius, 5px);
       padding: var(--ddd-spacing-4);
-      max-width: 400px;
+      max-width: 500px;
     }
       .wrapper {
         margin: var(--ddd-spacing-2);
         padding: var(--ddd-spacing-4);
       }
+
       h3 span {
         font-size: var(--embedd-component-label-font-size, var(--ddd-font-size-s));
       }
 
-
-    .error {
-      color: var(--simple-colors-default-theme-red-6);
-      text-align: center;
-    }
 
     .preview {
       display: flex;
       flex-direction: column;
       gap: var(--ddd-spacing-2);
     }
+
+    //Link color
 
     .preview img {
       width: 100%;
